@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flashy by Maame</title>
+
+    <!-- TAILWIND CSS (Modern Utility-First Styling) -->
+    <!-- This links the Tailwind framework via Content Delivery Network (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FONTAWESOME (Icons) -->
+    <!-- This links the icon library for the Penguin, Terminal, and Shuffle icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+
+    <style>
+      /* CUSTOM CSS: 3D Flip Mechanics */
+      /* These properties are not yet standard in Tailwind, so we write them in a <style> block. */
+
+      .perspective-1000 {
+        perspective: 1000px;
+      }
+
+      .transform-style-3d {
+        transform-style: preserve-3d;
+      }
+
+      .backface-hidden {
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+      }
+
+      .rotate-y-180 {
+        transform: rotateY(180deg);
+      }
+
+      #card-inner {
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .is-flipped {
+        transform: rotateY(180deg);
+      }
+
+      /* Modern scrollbar for the answer area */
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #1e293b;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #3b82f6;
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-[#0b0f1a] text-slate-200 min-h-screen flex flex-col items-center justify-center p-4 font-sans selection:bg-blue-500/30"
+  >
+    <!-- UI: HEADER -->
+    <header class="mb-12 text-center">
+      <div
+        class="inline-block p-4 rounded-3xl bg-slate-800/40 mb-5 border border-slate-700/50 shadow-2xl backdrop-blur-sm"
+      >
+        <i class="fa-brands fa-linux text-6xl text-yellow-400"></i>
+      </div>
+      <h1
+        class="text-4xl md:text-5xl font-black tracking-tight text-white mb-2"
+      >
+        DEVOPS <span class="text-blue-500">MEMORIZER</span>
+      </h1>
+      <p class="text-slate-500 font-bold tracking-[0.2em] text-xs uppercase">
+        linux foundations
+      </p>
+    </header>
+
+    <!-- UI: FLASHCARD COMPONENT -->
+    <main class="w-full max-w-lg perspective-1000">
+      <!-- The Card Wrapper -->
+      <div
+        id="flashcard"
+        class="relative h-80 w-full cursor-pointer select-none"
+      >
+        <div
+          id="card-inner"
+          class="relative w-full h-full transform-style-3d shadow-2xl"
+        >
+          <!-- FRONT: QUESTION -->
+          <div
+            class="absolute w-full h-full backface-hidden bg-white rounded-[2.5rem] flex flex-col items-center justify-center p-10 border-b-[10px] border-blue-600 shadow-xl text-slate-900"
+          >
+            <div class="absolute top-8 left-8 flex items-center gap-2">
+              <i class="fa-solid fa-terminal text-blue-600 text-xs"></i>
+              <span
+                class="text-[10px] font-black text-slate-400 uppercase tracking-widest"
+                >Question</span
+              >
+            </div>
+            <p
+              id="question-text"
+              class="text-2xl md:text-3xl font-extrabold text-center leading-tight tracking-tight"
+            >
+              Loading...
+            </p>
+            <div
+              class="absolute bottom-8 text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2"
+            >
+              <i class="fa-solid fa-rotate animate-spin-slow"></i> Click to
+              Reveal
+            </div>
+          </div>
+
+          <!-- BACK: ANSWER -->
+          <div
+            class="absolute w-full h-full backface-hidden rotate-y-180 bg-blue-600 rounded-[2.5rem] flex flex-col items-center justify-center p-10 border-b-[10px] border-blue-800 shadow-xl text-white"
+          >
+            <div class="absolute top-8 left-8 flex items-center gap-2">
+              <i class="fa-solid fa-check-double text-white/40 text-xs"></i>
+              <span
+                class="text-[10px] font-black text-white/40 uppercase tracking-widest"
+                >Answer</span
+              >
+            </div>
+            <p
+              id="answer-text"
+              class="text-xl md:text-2xl font-bold text-center leading-relaxed"
+            >
+              ...
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- UI: PROGRESS TRACKER -->
+      <div class="mt-10 space-y-4 px-2">
+        <div class="flex justify-between items-end">
+          <div class="flex flex-col">
+            <span
+              class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1"
+              >Current Progress</span
+            >
+            <span id="progress-text" class="text-xl font-black text-white"
+              >Card 1 / 25</span
+            >
+          </div>
+          <span
+            id="percentage-text"
+            class="text-sm font-black text-blue-500 bg-blue-500/10 px-3 py-1 rounded-lg"
+            >0% Complete</span
+          >
+        </div>
+        <div
+          class="w-full bg-slate-800/50 rounded-full h-3 overflow-hidden border border-slate-700/50"
+        >
+          <div
+            id="progress-bar"
+            class="bg-gradient-to-r from-blue-600 to-cyan-400 h-full transition-all duration-1000"
+            style="width: 0%"
+          ></div>
+        </div>
+      </div>
+
+      <!-- UI: CONTROLS -->
+      <div class="grid grid-cols-3 gap-5 mt-10">
+        <button
+          onclick="prevCard()"
+          class="group py-6 rounded-[1.5rem] bg-slate-800 hover:bg-slate-700 text-white transition-all active:scale-90 border border-slate-700 shadow-lg"
+        >
+          <i
+            class="fa-solid fa-arrow-left text-xl group-hover:-translate-x-1 transition-transform"
+          ></i>
+        </button>
+        <button
+          onclick="shuffleDeck()"
+          class="group py-6 rounded-[1.5rem] bg-slate-800 hover:bg-slate-700 text-yellow-500 transition-all active:scale-90 border border-slate-700 shadow-lg"
+        >
+          <i
+            class="fa-solid fa-shuffle text-xl group-hover:rotate-180 transition-transform duration-700"
+          ></i>
+        </button>
+        <button
+          onclick="nextCard()"
+          class="group py-6 rounded-[1.5rem] bg-blue-600 hover:bg-blue-500 text-white transition-all shadow-xl active:scale-90"
+        >
+          <i
+            class="fa-solid fa-arrow-right text-xl group-hover:translate-x-1 transition-transform"
+          ></i>
+        </button>
+      </div>
+    </main>
+
+    <footer
+      class="mt-16 text-slate-600 text-[10px] font-bold tracking-[0.4em] uppercase text-center"
+    >
+      Flashcard study guide by maame
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+      // 1. DATA: The 25 Linux Fundamentals Questions
+      const linuxQuestions = [
+        {
+          q: "Who is the primary maintainer of Linux?",
+          a: "The Linux Foundation (Linus Torvalds is a Fellow there).",
+        },
+        {
+          q: "What is the '/' directory called?",
+          a: "The Root Directory - the top level of the entire system.",
+        },
+        {
+          q: "Where do system configuration files live?",
+          a: "The /etc directory.",
+        },
+        {
+          q: "What does 'chmod 755' mean?",
+          a: "Owner: Full (7), Group: Read/Exec (5), Others: Read/Exec (5).",
+        },
+        {
+          q: "How do you view the manual for 'grep'?",
+          a: "Type 'man grep' in the terminal.",
+        },
+        {
+          q: "What is the purpose of /var/log?",
+          a: "To store log files that change as the system runs.",
+        },
+        {
+          q: "What is the kernel?",
+          a: "The core part of the OS that manages hardware and memory.",
+        },
+        {
+          q: "Which command lists all files, including hidden ones?",
+          a: "ls -a",
+        },
+        {
+          q: "What is a 'Pipe' (|) in Linux?",
+          a: "A way to send the output of one command to the input of another.",
+        },
+        { q: "What does 'sudo' stand for?", a: "SuperUser DO." },
+        { q: "Numerical value for 'Read' permission?", a: "4" },
+        { q: "Numerical value for 'Write' permission?", a: "2" },
+        { q: "Numerical value for 'Execute' permission?", a: "1" },
+        {
+          q: "Where are user personal files stored?",
+          a: "The /home directory.",
+        },
+        {
+          q: "Which command shows your current path?",
+          a: "pwd (Print Working Directory).",
+        },
+        {
+          q: "How do you stop a process immediately?",
+          a: "Ctrl + C (Interrupt Signal).",
+        },
+        {
+          q: "What is stored in the /bin directory?",
+          a: "Essential binary executables (system commands).",
+        },
+        {
+          q: "What does 'cd ..' execute?",
+          a: "Moves the user up one level to the parent directory.",
+        },
+        {
+          q: "What is the standard shell for Linux?",
+          a: "Bash (Bourne Again SHell).",
+        },
+        {
+          q: "What is the function of /tmp?",
+          a: "Storage for temporary files, often wiped on reboot.",
+        },
+        { q: "Which command creates a new directory?", a: "mkdir" },
+        {
+          q: "How do you create an empty file quickly?",
+          a: "touch <filename>",
+        },
+        {
+          q: "What is 'Grep' used for?",
+          a: "Searching for patterns or strings within text.",
+        },
+        {
+          q: "What is a 'Distribution' (Distro)?",
+          a: "A version of Linux bundled with specific software (e.g., Ubuntu).",
+        },
+        {
+          q: "What is the /root directory?",
+          a: "The home directory for the System Administrator (Root user).",
+        },
+      ];
+
+      // 2. STATE
+      let deck = [...linuxQuestions];
+      let index = 0;
+      let isFlipped = false;
+
+      // 3. CACHING DOM ELEMENTS
+      const card = document.getElementById("flashcard");
+      const cardInner = document.getElementById("card-inner");
+      const qEl = document.getElementById("question-text");
+      const aEl = document.getElementById("answer-text");
+      const pBar = document.getElementById("progress-bar");
+      const pText = document.getElementById("progress-text");
+      const percText = document.getElementById("percentage-text");
+
+      /**
+       * 4. UI UPDATE FUNCTION
+       * Logic: Reset flip state before changing content to avoid 'peeking' at next answer.
+       */
+      function updateDisplay() {
+        if (isFlipped) {
+          cardInner.classList.remove("is-flipped");
+          isFlipped = false;
+          // Wait for flip back to hide content before swapping text
+          setTimeout(applyContent, 250);
+        } else {
+          applyContent();
+        }
+      }
+
+      function applyContent() {
+        const current = deck[index];
+        qEl.innerText = current.q;
+        aEl.innerText = current.a;
+
+        const total = deck.length;
+        const currentNum = index + 1;
+        const percentage = Math.round((currentNum / total) * 100);
+
+        pText.innerText = `Card ${currentNum} / ${total}`;
+        percText.innerText = `${percentage}% Complete`;
+        pBar.style.width = `${percentage}%`;
+      }
+
+      // Toggle Flip
+      card.addEventListener("click", () => {
+        isFlipped = !isFlipped;
+        cardInner.classList.toggle("is-flipped");
+      });
+
+      // Navigation
+      function nextCard() {
+        index = (index + 1) % deck.length;
+        updateDisplay();
+      }
+
+      function prevCard() {
+        index = (index - 1 + deck.length) % deck.length;
+        updateDisplay();
+      }
+
+      // Algorithm: Fisher-Yates Shuffle
+      function shuffleDeck() {
+        index = 0;
+        for (let i = deck.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [deck[i], deck[j]] = [deck[j], deck[i]];
+        }
+        updateDisplay();
+      }
+
+      // Keyboard support
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight") nextCard();
+        if (e.key === "ArrowLeft") prevCard();
+        if (e.key === " ") {
+          e.preventDefault();
+          card.click();
+        }
+      });
+
+      // Initialize first render
+      updateDisplay();
+    </script>
+  </body>
+</html>
