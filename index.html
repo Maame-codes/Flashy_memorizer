@@ -50,7 +50,7 @@
       </p>
     </header>
 
-    <div id="menu-screen" class="w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+    <div id="menu-screen" class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
       <button onclick="loadDeck('foundations')" class="group p-8 rounded-[2.5rem] bg-slate-800/50 border border-slate-700/50 hover:border-blue-500 transition-all text-left shadow-2xl backdrop-blur-md">
         <div class="w-12 h-12 rounded-2xl bg-blue-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
           <i class="fa-solid fa-terminal text-blue-500 text-xl"></i>
@@ -67,6 +67,15 @@
         <h3 class="text-xl font-black text-white">Philosophy</h3>
         <p class="text-slate-400 text-sm mt-2">The Unix Way, Distro families, and Kernel concepts.</p>
         <span class="inline-block mt-4 text-[10px] font-black uppercase text-yellow-500 tracking-widest">10 Cards</span>
+      </button>
+
+      <button onclick="loadDeck('startup')" class="group p-8 rounded-[2.5rem] bg-slate-800/50 border border-slate-700/50 hover:border-green-500 transition-all text-left shadow-2xl backdrop-blur-md">
+        <div class="w-12 h-12 rounded-2xl bg-green-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+          <i class="fa-solid fa-power-off text-green-500 text-xl"></i>
+        </div>
+        <h3 class="text-xl font-black text-white">System Startup</h3>
+        <p class="text-slate-400 text-sm mt-2">BIOS, Bootloaders, Kernel and Systemd.</p>
+        <span class="inline-block mt-4 text-[10px] font-black uppercase text-green-500 tracking-widest">10 Cards</span>
       </button>
     </div>
 
@@ -133,7 +142,7 @@
       const foundationsData = [
         { q: "Who is the primary maintainer of Linux?", a: "The Linux Foundation (Linus Torvalds is a Fellow there)." },
         { q: "What is the '/' directory called?", a: "The Root Directory - the top level of the entire system." },
-        { q: "Where do system configuration files live?", a: "The /etc directory." },
+        { q: "Where do system configuration files live?", a: "/etc directory." },
         { q: "What does 'chmod 755' mean?", a: "Owner: Full (7), Group: Read/Exec (5), Others: Read/Exec (5)." },
         { q: "How do you view the manual for 'grep'?", a: "Type 'man grep' in the terminal." },
         { q: "What is the purpose of /var/log?", a: "To store log files that change as the system runs." },
@@ -156,6 +165,19 @@
         { q: "What is 'Grep' used for?", a: "Searching for patterns or strings within text." },
         { q: "What is a 'Distribution' (Distro)?", a: "A version of Linux bundled with specific software (e.g., Ubuntu)." },
         { q: "What is the /root directory?", a: "The home directory for the System Administrator (Root user)." }
+      ];
+
+      const startupData = [
+        { q: "What is the first software to run at startup?", a: "BIOS or UEFI." },
+        { q: "What check does BIOS perform on hardware?", a: "POST (Power-On Self-Test)." },
+        { q: "What is the most common Linux bootloader?", a: "GRUB (GRand Unified Bootloader)." },
+        { q: "What is the primary job of the bootloader?", a: "To load the Linux Kernel into memory." },
+        { q: "What is the mother of all processes?", a: "init (now usually systemd)." },
+        { q: "What is the Process ID (PID) of systemd?", a: "PID 1." },
+        { q: "Where does the kernel run with full hardware access?", a: "Kernel Space." },
+        { q: "Where do normal apps like your browser run?", a: "User Space." },
+        { q: "Which command displays kernel startup messages?", a: "dmesg" },
+        { q: "Why is the startup process separated into steps?", a: "So you can find and fix exactly where a failure happens." }
       ];
 
       const philosophyData = [
@@ -193,6 +215,9 @@
         if (type === 'foundations') {
           deck = [...foundationsData];
           deckStatus.innerText = "Linux Foundations";
+        } else if (type === 'startup') {
+          deck = [...startupData];
+          deckStatus.innerText = "System Startup ";
         } else {
           deck = [...philosophyData];
           deckStatus.innerText = "Philosophy & Concepts";
