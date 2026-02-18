@@ -50,7 +50,7 @@
       </p>
     </header>
 
-    <div id="menu-screen" class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+    <div id="menu-screen" class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
       <button onclick="loadDeck('foundations')" class="group p-8 rounded-[2.5rem] bg-slate-800/50 border border-slate-700/50 hover:border-blue-500 transition-all text-left shadow-2xl backdrop-blur-md">
         <div class="w-12 h-12 rounded-2xl bg-blue-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
           <i class="fa-solid fa-terminal text-blue-500 text-xl"></i>
@@ -76,6 +76,15 @@
         <h3 class="text-xl font-black text-white">System Startup</h3>
         <p class="text-slate-400 text-sm mt-2">BIOS, Bootloaders, Kernel and Systemd.</p>
         <span class="inline-block mt-4 text-[10px] font-black uppercase text-green-500 tracking-widest">10 Cards</span>
+      </button>
+
+      <button onclick="loadDeck('graphical')" class="group p-8 rounded-[2.5rem] bg-slate-800/50 border border-slate-700/50 hover:border-purple-500 transition-all text-left shadow-2xl backdrop-blur-md">
+        <div class="w-12 h-12 rounded-2xl bg-purple-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+          <i class="fa-solid fa-desktop text-purple-500 text-xl"></i>
+        </div>
+        <h3 class="text-xl font-black text-white">Graphical Interface</h3>
+        <p class="text-slate-400 text-sm mt-2">X11, Wayland, DEs, and TTY switching.</p>
+        <span class="inline-block mt-4 text-[10px] font-black uppercase text-purple-500 tracking-widest">10 Cards</span>
       </button>
     </div>
 
@@ -193,6 +202,20 @@
         { q: "Why is Linux good for DevOps?", a: "It is highly automatable, scriptable, and modular." }
       ];
 
+      // DATA FOR CHAPTER 5: GRAPHICAL INTERFACE
+      const graphicalData = [
+        { q: "Is the GUI built into the Linux Kernel?", a: "No, it is a separate layer on top of the system." },
+        { q: "What are the two main 'engines' for Linux GUIs?", a: "X Window System (X11) and Wayland." },
+        { q: "Which GUI engine allows remote network display?", a: "X Window System (X11)." },
+        { q: "What is a 'Window Manager' (WM)?", a: "The tool that controls window borders and placement." },
+        { q: "What is a 'Desktop Environment' (DE)?", a: "A full suite of apps, file managers, and settings (e.g., GNOME)." },
+        { q: "What is the 'Display Manager'?", a: "The program that handles the graphical login screen." },
+        { q: "What are TTYs (Virtual Consoles)?", a: "Text-only screens used for troubleshooting when GUIs freeze." },
+        { q: "How do you switch to a text TTY?", a: "Ctrl + Alt + F3 (through F6)." },
+        { q: "How do you return to the graphical desktop?", a: "Usually Ctrl + Alt + F1 or F2." },
+        { q: "Name a modern, secure successor to X11.", a: "Wayland." }
+      ];
+
       // 2. STATE
       let deck = [];
       let index = 0;
@@ -218,6 +241,9 @@
         } else if (type === 'startup') {
           deck = [...startupData];
           deckStatus.innerText = "System Startup ";
+        } else if (type === 'graphical') {
+          deck = [...graphicalData];
+          deckStatus.innerText = "Graphical Interface";
         } else {
           deck = [...philosophyData];
           deckStatus.innerText = "Philosophy & Concepts";
